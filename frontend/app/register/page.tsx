@@ -27,7 +27,11 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getPublicTherapists().then(setTherapists).catch(() => {});
+    getPublicTherapists()
+      .then((data) => {
+        if (Array.isArray(data)) setTherapists(data);
+      })
+      .catch(() => {});
   }, []);
 
   const handleSubmit = async (e: FormEvent) => {

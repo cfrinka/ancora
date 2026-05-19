@@ -7,19 +7,20 @@ import { getTherapistFeed, getMyPatients } from "@/lib/api";
 import { Post, User } from "@/types";
 import Navbar from "@/components/Navbar";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeEmotion } from "@/lib/i18n/emotions";
 import { Loader2 } from "lucide-react";
 
-function EmotionTag({ label }: { label: string }) {
+function EmotionTag({ label, locale }: { label: string; locale: string }) {
   return (
     <span className="inline-block px-3 py-1 text-[11px] font-medium tracking-wide border border-olive-border text-olive-muted rounded-full bg-olive-light">
-      {label}
+      {localizeEmotion(label, locale)}
     </span>
   );
 }
 
 export default function TherapistPage() {
   const { user, loading: authLoading } = useAuth();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -116,7 +117,7 @@ export default function TherapistPage() {
                   {post.emotions?.length > 0 && (
                     <div className="flex flex-wrap gap-2 pt-1">
                       {post.emotions.map((e) => (
-                        <EmotionTag key={e.id} label={e.label} />
+                        <EmotionTag key={e.id} label={e.label} locale={locale} />
                       ))}
                     </div>
                   )}

@@ -7,17 +7,18 @@ import { getPatientFeed, createPost, getActiveEmotions } from "@/lib/api";
 import { Post, Emotion } from "@/types";
 import Navbar from "@/components/Navbar";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeEmotion } from "@/lib/i18n/emotions";
 import { Loader2, Plus, X } from "lucide-react";
 
-function EmotionTag({ label }: { label: string }) {
+function EmotionTag({ label, locale }: { label: string; locale: string }) {
   return (
     <span className="inline-block px-3 py-1 text-[11px] font-medium tracking-wide border border-olive-border text-olive-muted rounded-full bg-olive-light">
-      {label}
+      {localizeEmotion(label, locale)}
     </span>
   );
 }
 
-function PostCard({ post }: { post: Post }) {
+function PostCard({ post, locale }: { post: Post; locale: string }) {
   const date = new Date(post.created_at).toLocaleDateString(undefined, {
     month: "long",
     day: "numeric",
@@ -34,7 +35,7 @@ function PostCard({ post }: { post: Post }) {
       {post.emotions?.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-1">
           {post.emotions.map((e) => (
-            <EmotionTag key={e.id} label={e.label} />
+            <EmotionTag key={e.id} label={e.label} locale={locale} />
           ))}
         </div>
       )}
@@ -47,7 +48,7 @@ function PostCard({ post }: { post: Post }) {
 
 export default function PatientPage() {
   const { user, loading: authLoading } = useAuth();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -66,8 +67,8 @@ export default function PatientPage() {
 
     Promise.all([getPatientFeed(), getActiveEmotions()])
       .then(([feed, ems]) => {
-        setPosts(feed as Post[]);
-        setEmotions(ems as Emotion[]);
+        setPosts((feed as Post[]) ?? []);
+        setEmotions((ems as Emotion[]) ?? []);
       })
       .finally(() => setLoadingPosts(false));
   }, [user, authLoading, router]);
@@ -166,7 +167,7 @@ export default function PatientPage() {
                             : "bg-olive-light border-olive-border text-olive-muted hover:border-olive hover:text-olive"
                         }`}
                       >
-                        {em.label}
+                        {localizeEmotion(em.label, locale)}
                       </button>
                     );
                   })}
@@ -199,7 +200,7 @@ export default function PatientPage() {
         ) : (
           <div className="space-y-4">
             {posts.map((p: Post) => (
-              <PostCard key={p.id} post={p} />
+              <PostCard key={p.id} post={p} locale={locale} />
             ))}
           </div>
         )}
