@@ -5,9 +5,9 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ontherapy
-      POSTGRES_PASSWORD: ontherapy_dev
-      POSTGRES_DB: ontherapy
+      POSTGRES_USER: ancora
+      POSTGRES_PASSWORD: ancora_dev
+      POSTGRES_DB: ancora
     ports:
       - "5432:5432"
     volumes:

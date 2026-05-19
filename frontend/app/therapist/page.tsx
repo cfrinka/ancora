@@ -6,11 +6,11 @@ import { useAuth } from "@/lib/auth-context";
 import { getTherapistFeed, getMyPatients } from "@/lib/api";
 import { Post, User } from "@/types";
 import Navbar from "@/components/Navbar";
-import { Loader2, Users, BookOpen } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-function EmotionBadge({ label }: { label: string }) {
+function EmotionTag({ label }: { label: string }) {
   return (
-    <span className="inline-block px-2.5 py-0.5 text-xs font-medium bg-brand-100 text-brand-700 rounded-full">
+    <span className="inline-block px-3 py-1 text-[11px] font-medium tracking-wide border border-olive-border text-olive-muted rounded-full bg-olive-light">
       {label}
     </span>
   );
@@ -48,21 +48,22 @@ export default function TherapistPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 text-brand-500 animate-spin" />
+      <div className="flex items-center justify-center min-h-screen bg-canvas">
+        <Loader2 className="w-5 h-5 text-olive animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-canvas">
       <Navbar />
-      <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="flex items-center justify-between flex-wrap gap-3">
+      <main className="max-w-2xl mx-auto px-6 py-12 space-y-8">
+
+        {/* Header */}
+        <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Patient Feed</h1>
-            <p className="text-sm text-slate-500 mt-0.5">
-              <Users className="w-4 h-4 inline mr-1" />
+            <h1 className="text-lg font-medium text-ink tracking-tight">Patient Feed</h1>
+            <p className="text-sm text-warm-400 font-light mt-0.5">
               {patients.length} patient{patients.length !== 1 ? "s" : ""} assigned
             </p>
           </div>
@@ -70,51 +71,50 @@ export default function TherapistPage() {
           <select
             value={filterPatient}
             onChange={(e) => setFilterPatient(e.target.value)}
-            className="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+            className="px-4 py-2 text-sm bg-canvas border border-warm-300 text-ink rounded-card focus:outline-none focus:border-olive transition-colors duration-150"
           >
             <option value="all">All patients</option>
             {patients.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.full_name}
-              </option>
+              <option key={p.id} value={p.id}>{p.full_name}</option>
             ))}
           </select>
         </div>
 
+        {/* Feed */}
         {filtered.length === 0 ? (
-          <div className="text-center py-16 text-slate-400">
-            <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-30" />
-            <p className="text-lg font-medium">No entries yet</p>
-            <p className="text-sm mt-1">Your patients haven&apos;t posted anything.</p>
+          <div className="text-center py-24">
+            <p className="text-sm text-warm-400 font-light">No entries yet.</p>
+            <p className="text-xs text-warm-300 mt-1">Your patients haven&apos;t written anything.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {filtered.map((post) => {
-              const date = new Date(post.created_at).toLocaleString(undefined, {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
+              const date = new Date(post.created_at).toLocaleDateString(undefined, {
+                month: "long", day: "numeric", year: "numeric",
+              });
+              const time = new Date(post.created_at).toLocaleTimeString(undefined, {
+                hour: "2-digit", minute: "2-digit",
               });
               return (
                 <article
                   key={post.id}
-                  className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-3"
+                  className="bg-warm-50 rounded-card border border-warm-200 shadow-card p-6 space-y-4 hover:shadow-card-hover transition-shadow duration-200"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-brand-700">
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-[11px] font-semibold tracking-widest uppercase text-olive-muted">
                       {patientName(post.author_id)}
                     </span>
-                    <span className="text-xs text-slate-400">{date}</span>
+                    <span className="text-[11px] text-warm-400 whitespace-nowrap shrink-0">
+                      {date} &middot; {time}
+                    </span>
                   </div>
-                  <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+                  <p className="text-ink text-sm leading-7 whitespace-pre-wrap font-light">
                     {post.content}
                   </p>
                   {post.emotions?.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2 pt-1">
                       {post.emotions.map((e) => (
-                        <EmotionBadge key={e.id} label={e.label} />
+                        <EmotionTag key={e.id} label={e.label} />
                       ))}
                     </div>
                   )}

@@ -1,14 +1,15 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"time"
 
-	"github.com/ontherapy/backend/internal/auth"
-	"github.com/ontherapy/backend/internal/config"
-	mw "github.com/ontherapy/backend/internal/middleware"
-	"github.com/ontherapy/backend/internal/model"
-	"github.com/ontherapy/backend/internal/repository"
+	"github.com/ancora/backend/internal/auth"
+	"github.com/ancora/backend/internal/config"
+	mw "github.com/ancora/backend/internal/middleware"
+	"github.com/ancora/backend/internal/model"
+	"github.com/ancora/backend/internal/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,11 +31,13 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.users.FindByEmail(r.Context(), req.Email)
 	if err != nil {
+		log.Printf("[login] FindByEmail(%q) error: %v", req.Email, err)
 		writeError(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
+		log.Printf("[login] bcrypt mismatch for %q: %v | hash: %s", req.Email, err, user.PasswordHash)
 		writeError(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}

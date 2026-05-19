@@ -1,4 +1,4 @@
-# OnTherapy
+# Ancora
 
 A secure, HIPAA-conscious journaling feed for patients and therapists.
 
@@ -40,7 +40,7 @@ App starts on `http://localhost:3000`.
 ## Default Admin Credentials
 | Field    | Value                  |
 |----------|------------------------|
-| Email    | admin@ontherapy.com    |
+| Email    | admin@ancora.com       |
 | Password | Admin@1234!            |
 
 > **Change the password immediately** after first login by updating the `password_hash` in the `users` table.  
@@ -54,7 +54,7 @@ App starts on `http://localhost:3000`.
 
 ## Folder Structure
 ```
-ontherapy/
+ancora/
 ├── backend/
 │   ├── cmd/server/          # main.go + router.go
 │   ├── internal/

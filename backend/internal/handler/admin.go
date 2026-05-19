@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ancora/backend/internal/model"
+	"github.com/ancora/backend/internal/repository"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/ontherapy/backend/internal/model"
-	"github.com/ontherapy/backend/internal/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 

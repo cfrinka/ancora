@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ontherapy/backend/internal/auth"
-	"github.com/ontherapy/backend/internal/model"
+	"github.com/ancora/backend/internal/auth"
+	"github.com/ancora/backend/internal/model"
 )
 
 type contextKey string

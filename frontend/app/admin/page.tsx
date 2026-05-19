@@ -119,8 +119,8 @@ export default function AdminPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 text-brand-500 animate-spin" />
+      <div className="flex items-center justify-center min-h-screen bg-canvas">
+        <Loader2 className="w-5 h-5 text-olive animate-spin" />
       </div>
     );
   }
@@ -131,22 +131,29 @@ export default function AdminPage() {
     { key: "emotions", label: "Emotions" },
   ];
 
+  const inputCls = "w-full px-4 py-2.5 bg-canvas border border-warm-300 text-sm text-ink placeholder:text-warm-400 rounded-card focus:outline-none focus:border-olive transition-colors duration-150";
+  const btnPrimary = "flex items-center gap-2 px-5 py-2.5 bg-olive hover:bg-olive-hover disabled:opacity-50 text-canvas text-sm font-medium rounded-card transition-colors duration-150";
+
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-canvas">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        <h1 className="text-2xl font-bold text-slate-800">Administration Dashboard</h1>
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-8">
+
+        <div>
+          <h1 className="text-lg font-medium text-ink tracking-tight">Administration</h1>
+          <p className="text-sm text-warm-400 font-light mt-0.5">Manage therapists, patients and emotion tags</p>
+        </div>
 
         {/* Tab bar */}
-        <div className="flex gap-1 border-b border-slate-200">
+        <div className="flex gap-0 border-b border-warm-200">
           {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`px-5 py-2.5 text-sm font-medium rounded-t-lg transition -mb-px border-b-2 ${
+              className={`px-5 py-3 text-[11px] font-semibold tracking-widest uppercase transition-colors duration-150 -mb-px border-b-2 ${
                 tab === t.key
-                  ? "border-brand-600 text-brand-700"
-                  : "border-transparent text-slate-500 hover:text-slate-700"
+                  ? "border-olive text-olive"
+                  : "border-transparent text-warm-400 hover:text-ink"
               }`}
             >
               {t.label}
@@ -156,58 +163,46 @@ export default function AdminPage() {
 
         {/* ── Therapists tab ── */}
         {tab === "therapists" && (
-          <div className="space-y-5">
-            <form onSubmit={handleCreateTherapist} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
-              <h2 className="font-semibold text-slate-700">Invite New Therapist</h2>
+          <div className="space-y-6">
+            <form onSubmit={handleCreateTherapist} className="bg-warm-50 rounded-card border border-warm-200 shadow-card p-6 space-y-5">
+              <p className="text-[11px] font-semibold tracking-widest uppercase text-warm-500">Invite New Therapist</p>
               <div className="grid sm:grid-cols-3 gap-3">
-                <input
-                  type="text" placeholder="Full name" required value={thName}
-                  onChange={(e) => setThName(e.target.value)}
-                  className="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                />
-                <input
-                  type="email" placeholder="Email" required value={thEmail}
-                  onChange={(e) => setThEmail(e.target.value)}
-                  className="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                />
-                <input
-                  type="password" placeholder="Temporary password" required value={thPwd}
-                  onChange={(e) => setThPwd(e.target.value)}
-                  className="px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                />
+                <input type="text" placeholder="Full name" required value={thName}
+                  onChange={(e) => setThName(e.target.value)} className={inputCls} />
+                <input type="email" placeholder="Email" required value={thEmail}
+                  onChange={(e) => setThEmail(e.target.value)} className={inputCls} />
+                <input type="password" placeholder="Temporary password" required value={thPwd}
+                  onChange={(e) => setThPwd(e.target.value)} className={inputCls} />
               </div>
-              {thError && <p className="text-sm text-red-600">{thError}</p>}
-              <button
-                type="submit" disabled={thSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
-              >
-                <Plus className="w-4 h-4" />{thSaving ? "Creating…" : "Create Therapist"}
+              {thError && <p className="text-xs text-warm-700 bg-warm-100 border border-warm-300 rounded-card px-4 py-3">{thError}</p>}
+              <button type="submit" disabled={thSaving} className={btnPrimary}>
+                <Plus className="w-3.5 h-3.5" />{thSaving ? "Creating…" : "Create therapist"}
               </button>
             </form>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="rounded-card border border-warm-200 shadow-card overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-slate-500 text-xs uppercase">
+                <thead className="bg-warm-100">
                   <tr>
-                    <th className="px-4 py-3 text-left">Name</th>
-                    <th className="px-4 py-3 text-left">Email</th>
-                    <th className="px-4 py-3 text-left">Status</th>
+                    <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Name</th>
+                    <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Email</th>
+                    <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-warm-100 bg-warm-50">
                   {therapists.map((t) => (
-                    <tr key={t.id}>
-                      <td className="px-4 py-3 font-medium text-slate-800">{t.full_name}</td>
-                      <td className="px-4 py-3 text-slate-500">{t.email}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${t.is_active ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+                    <tr key={t.id} className="hover:bg-warm-100 transition-colors duration-100">
+                      <td className="px-5 py-3.5 text-ink font-medium text-sm">{t.full_name}</td>
+                      <td className="px-5 py-3.5 text-warm-500 text-sm">{t.email}</td>
+                      <td className="px-5 py-3.5">
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase ${t.is_active ? "bg-olive-light text-olive border border-olive-border" : "bg-warm-100 text-warm-400 border border-warm-200"}`}>
                           {t.is_active ? "Active" : "Inactive"}
                         </span>
                       </td>
                     </tr>
                   ))}
                   {therapists.length === 0 && (
-                    <tr><td colSpan={3} className="px-4 py-8 text-center text-slate-400">No therapists yet</td></tr>
+                    <tr><td colSpan={3} className="px-5 py-10 text-center text-sm text-warm-400 font-light">No therapists yet</td></tr>
                   )}
                 </tbody>
               </table>
@@ -217,51 +212,40 @@ export default function AdminPage() {
 
         {/* ── Patients tab ── */}
         {tab === "patients" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="rounded-card border border-warm-200 shadow-card overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-500 text-xs uppercase">
+              <thead className="bg-warm-100">
                 <tr>
-                  <th className="px-4 py-3 text-left">Name</th>
-                  <th className="px-4 py-3 text-left">Email</th>
-                  <th className="px-4 py-3 text-left">Assigned Therapist</th>
-                  <th className="px-4 py-3 text-left">Action</th>
+                  <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Name</th>
+                  <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Email</th>
+                  <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Therapist</th>
+                  <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-warm-100 bg-warm-50">
                 {patients.map((p) => {
                   const currentTherapist = therapists.find((t) => t.id === p.therapist_id);
                   return (
-                    <tr key={p.id}>
-                      <td className="px-4 py-3 font-medium text-slate-800">{p.full_name}</td>
-                      <td className="px-4 py-3 text-slate-500">{p.email}</td>
-                      <td className="px-4 py-3 text-slate-600">
-                        {currentTherapist ? currentTherapist.full_name : <span className="text-slate-400 italic">Unassigned</span>}
+                    <tr key={p.id} className="hover:bg-warm-100 transition-colors duration-100">
+                      <td className="px-5 py-3.5 text-ink font-medium">{p.full_name}</td>
+                      <td className="px-5 py-3.5 text-warm-500">{p.email}</td>
+                      <td className="px-5 py-3.5 text-warm-600">
+                        {currentTherapist ? currentTherapist.full_name : <span className="text-warm-300 italic text-xs">Unassigned</span>}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-3.5">
                         {assigningId === p.id ? (
                           <div className="flex items-center gap-2">
-                            <select
-                              value={assignTarget}
-                              onChange={(e) => setAssignTarget(e.target.value)}
-                              className="text-xs border border-slate-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-500"
-                            >
+                            <select value={assignTarget} onChange={(e) => setAssignTarget(e.target.value)}
+                              className="text-xs bg-canvas border border-warm-300 text-ink rounded-card px-3 py-1.5 focus:outline-none focus:border-olive">
                               <option value="">Select therapist</option>
-                              {therapists.map((t) => (
-                                <option key={t.id} value={t.id}>{t.full_name}</option>
-                              ))}
+                              {therapists.map((t) => <option key={t.id} value={t.id}>{t.full_name}</option>)}
                             </select>
-                            <button onClick={() => handleAssign(p.id)} className="text-green-600 hover:text-green-800">
-                              <Check className="w-4 h-4" />
-                            </button>
-                            <button onClick={() => setAssigningId(null)} className="text-slate-400 hover:text-slate-600">
-                              <X className="w-4 h-4" />
-                            </button>
+                            <button onClick={() => handleAssign(p.id)} className="text-olive hover:text-olive-hover"><Check className="w-4 h-4" /></button>
+                            <button onClick={() => setAssigningId(null)} className="text-warm-300 hover:text-warm-600"><X className="w-4 h-4" /></button>
                           </div>
                         ) : (
-                          <button
-                            onClick={() => { setAssigningId(p.id); setAssignTarget(p.therapist_id ?? ""); }}
-                            className="text-xs text-brand-600 hover:underline"
-                          >
+                          <button onClick={() => { setAssigningId(p.id); setAssignTarget(p.therapist_id ?? ""); }}
+                            className="text-[11px] font-medium text-olive-muted hover:text-olive tracking-wide transition-colors">
                             {currentTherapist ? "Reassign" : "Assign"}
                           </button>
                         )}
@@ -270,7 +254,7 @@ export default function AdminPage() {
                   );
                 })}
                 {patients.length === 0 && (
-                  <tr><td colSpan={4} className="px-4 py-8 text-center text-slate-400">No patients found</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-10 text-center text-sm text-warm-400 font-light">No patients found</td></tr>
                 )}
               </tbody>
             </table>
@@ -279,83 +263,63 @@ export default function AdminPage() {
 
         {/* ── Emotions tab ── */}
         {tab === "emotions" && (
-          <div className="space-y-5">
-            <form onSubmit={handleCreateEmotion} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
-              <h2 className="font-semibold text-slate-700">Add New Emotion</h2>
+          <div className="space-y-6">
+            <form onSubmit={handleCreateEmotion} className="bg-warm-50 rounded-card border border-warm-200 shadow-card p-6 space-y-4">
+              <p className="text-[11px] font-semibold tracking-widest uppercase text-warm-500">Add New Emotion</p>
               <div className="flex gap-3">
-                <input
-                  type="text" placeholder="e.g. Peaceful" required value={emLabel}
-                  onChange={(e) => setEmLabel(e.target.value)}
-                  className="flex-1 px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                />
-                <button
-                  type="submit" disabled={emSaving}
-                  className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
-                >
-                  <Plus className="w-4 h-4" />{emSaving ? "Adding…" : "Add"}
+                <input type="text" placeholder="e.g. Peaceful" required value={emLabel}
+                  onChange={(e) => setEmLabel(e.target.value)} className={inputCls} />
+                <button type="submit" disabled={emSaving} className={btnPrimary}>
+                  <Plus className="w-3.5 h-3.5" />{emSaving ? "Adding…" : "Add"}
                 </button>
               </div>
-              {emError && <p className="text-sm text-red-600">{emError}</p>}
+              {emError && <p className="text-xs text-warm-700 bg-warm-100 border border-warm-300 rounded-card px-4 py-3">{emError}</p>}
             </form>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="rounded-card border border-warm-200 shadow-card overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-slate-500 text-xs uppercase">
+                <thead className="bg-warm-100">
                   <tr>
-                    <th className="px-4 py-3 text-left">Label</th>
-                    <th className="px-4 py-3 text-left">Status</th>
-                    <th className="px-4 py-3 text-right">Actions</th>
+                    <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Label</th>
+                    <th className="px-5 py-3 text-left text-[10px] font-semibold tracking-widest uppercase text-warm-500">Status</th>
+                    <th className="px-5 py-3 text-right text-[10px] font-semibold tracking-widest uppercase text-warm-500">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-warm-100 bg-warm-50">
                   {emotions.map((em) => (
-                    <tr key={em.id}>
-                      <td className="px-4 py-3">
+                    <tr key={em.id} className="hover:bg-warm-100 transition-colors duration-100">
+                      <td className="px-5 py-3.5">
                         {editingEmId === em.id ? (
-                          <input
-                            value={editingEmLabel}
-                            onChange={(e) => setEditingEmLabel(e.target.value)}
-                            className="px-2 py-1 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-500"
-                          />
+                          <input value={editingEmLabel} onChange={(e) => setEditingEmLabel(e.target.value)}
+                            className="px-3 py-1.5 text-sm bg-canvas border border-warm-300 rounded-card focus:outline-none focus:border-olive" />
                         ) : (
-                          <span className="font-medium text-slate-800">{em.label}</span>
+                          <span className="font-medium text-ink">{em.label}</span>
                         )}
                       </td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${em.is_active ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+                      <td className="px-5 py-3.5">
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase ${em.is_active ? "bg-olive-light text-olive border border-olive-border" : "bg-warm-100 text-warm-400 border border-warm-200"}`}>
                           {em.is_active ? "Active" : "Inactive"}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="px-5 py-3.5">
+                        <div className="flex items-center justify-end gap-3">
                           {editingEmId === em.id ? (
                             <>
-                              <button onClick={() => handleUpdateEmotion(em.id, em.is_active)} className="text-green-600 hover:text-green-800">
-                                <Check className="w-4 h-4" />
-                              </button>
-                              <button onClick={() => setEditingEmId(null)} className="text-slate-400 hover:text-slate-600">
-                                <X className="w-4 h-4" />
-                              </button>
+                              <button onClick={() => handleUpdateEmotion(em.id, em.is_active)} className="text-olive hover:text-olive-hover"><Check className="w-4 h-4" /></button>
+                              <button onClick={() => setEditingEmId(null)} className="text-warm-300 hover:text-warm-600"><X className="w-4 h-4" /></button>
                             </>
                           ) : (
                             <>
-                              <button
-                                onClick={() => { setEditingEmId(em.id); setEditingEmLabel(em.label); }}
-                                className="text-slate-400 hover:text-brand-600"
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </button>
+                              <button onClick={() => { setEditingEmId(em.id); setEditingEmLabel(em.label); }}
+                                className="text-warm-300 hover:text-olive transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
                               <button
                                 onClick={() => adminUpdateEmotion(em.id, em.label, !em.is_active).then((updated) =>
-                                  setEmotions((prev) => prev.map((e) => (e.id === em.id ? updated as Emotion : e)))
+                                  setEmotions((prev: Emotion[]) => prev.map((e: Emotion) => (e.id === em.id ? updated as Emotion : e)))
                                 )}
-                                className={`text-xs ${em.is_active ? "text-amber-500 hover:text-amber-700" : "text-green-600 hover:text-green-800"}`}
-                              >
+                                className="text-[11px] font-medium text-warm-400 hover:text-ink tracking-wide transition-colors">
                                 {em.is_active ? "Deactivate" : "Activate"}
                               </button>
-                              <button onClick={() => handleDeleteEmotion(em.id)} className="text-slate-300 hover:text-red-500">
-                                <Trash2 className="w-4 h-4" />
-                              </button>
+                              <button onClick={() => handleDeleteEmotion(em.id)} className="text-warm-200 hover:text-warm-600 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                             </>
                           )}
                         </div>
@@ -363,7 +327,7 @@ export default function AdminPage() {
                     </tr>
                   ))}
                   {emotions.length === 0 && (
-                    <tr><td colSpan={3} className="px-4 py-8 text-center text-slate-400">No emotions defined</td></tr>
+                    <tr><td colSpan={3} className="px-5 py-10 text-center text-sm text-warm-400 font-light">No emotions defined</td></tr>
                   )}
                 </tbody>
               </table>

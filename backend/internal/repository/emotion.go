@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
+	"github.com/ancora/backend/internal/model"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/ontherapy/backend/internal/model"
 )
 
 type EmotionRepository struct {

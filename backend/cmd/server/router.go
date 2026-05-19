@@ -3,13 +3,13 @@ package main
 import (
 	"net/http"
 
+	"github.com/ancora/backend/internal/config"
+	"github.com/ancora/backend/internal/handler"
+	mw "github.com/ancora/backend/internal/middleware"
+	"github.com/ancora/backend/internal/model"
 	"github.com/go-chi/chi/v5"
 	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/ontherapy/backend/internal/config"
-	"github.com/ontherapy/backend/internal/handler"
-	mw "github.com/ontherapy/backend/internal/middleware"
-	"github.com/ontherapy/backend/internal/model"
 )
 
 func buildRouter(

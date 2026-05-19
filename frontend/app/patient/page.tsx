@@ -6,36 +6,40 @@ import { useAuth } from "@/lib/auth-context";
 import { getPatientFeed, createPost, getActiveEmotions } from "@/lib/api";
 import { Post, Emotion } from "@/types";
 import Navbar from "@/components/Navbar";
-import { PlusCircle, X, ChevronDown, Loader2 } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 
-function EmotionBadge({ label }: { label: string }) {
+function EmotionTag({ label }: { label: string }) {
   return (
-    <span className="inline-block px-2.5 py-0.5 text-xs font-medium bg-brand-100 text-brand-700 rounded-full">
+    <span className="inline-block px-3 py-1 text-[11px] font-medium tracking-wide border border-olive-border text-olive-muted rounded-full bg-olive-light">
       {label}
     </span>
   );
 }
 
 function PostCard({ post }: { post: Post }) {
-  const date = new Date(post.created_at).toLocaleString(undefined, {
-    month: "short",
+  const date = new Date(post.created_at).toLocaleDateString(undefined, {
+    month: "long",
     day: "numeric",
     year: "numeric",
+  });
+  const time = new Date(post.created_at).toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
   });
 
   return (
-    <article className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-3">
-      <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">{post.content}</p>
+    <article className="bg-warm-50 rounded-card border border-warm-200 shadow-card p-6 space-y-4 hover:shadow-card-hover transition-shadow duration-200">
+      <p className="text-ink text-sm leading-7 whitespace-pre-wrap font-light">{post.content}</p>
       {post.emotions?.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2 pt-1">
           {post.emotions.map((e) => (
-            <EmotionBadge key={e.id} label={e.label} />
+            <EmotionTag key={e.id} label={e.label} />
           ))}
         </div>
       )}
-      <p className="text-xs text-slate-400">{date}</p>
+      <p className="text-[11px] text-warm-400 tracking-wide pt-1">
+        {date} &middot; {time}
+      </p>
     </article>
   );
 }
@@ -67,23 +71,23 @@ export default function PatientPage() {
   }, [user, authLoading, router]);
 
   const toggleEmotion = (id: number) =>
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    setSelectedIds((prev: number[]) =>
+      prev.includes(id) ? prev.filter((x: number) => x !== id) : [...prev, id]
     );
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!content.trim()) { setError("Content cannot be empty."); return; }
+    if (!content.trim()) { setError("Please write something before saving."); return; }
     setError("");
     setSubmitting(true);
     try {
       const newPost = await createPost(content.trim(), selectedIds) as Post;
-      setPosts((prev) => [newPost, ...prev]);
+      setPosts((prev: Post[]) => [newPost, ...prev]);
       setContent("");
       setSelectedIds([]);
       setShowForm(false);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to create post");
+      setError(err instanceof Error ? err.message : "Failed to save entry");
     } finally {
       setSubmitting(false);
     }
@@ -91,69 +95,85 @@ export default function PatientPage() {
 
   if (authLoading || loadingPosts) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 text-brand-500 animate-spin" />
+      <div className="flex items-center justify-center min-h-screen bg-canvas">
+        <Loader2 className="w-5 h-5 text-olive animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-canvas">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-2xl mx-auto px-6 py-12 space-y-8">
+
+        {/* Page header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-slate-800">My Journal</h1>
+          <div>
+            <h1 className="text-lg font-medium text-ink tracking-tight">Journal</h1>
+            <p className="text-sm text-warm-400 font-light mt-0.5">Your private entries</p>
+          </div>
           <button
-            onClick={() => setShowForm((v) => !v)}
-            className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg transition"
+            onClick={() => setShowForm((v: boolean) => !v)}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-card transition-colors duration-150 ${
+              showForm
+                ? "bg-warm-200 text-warm-700 hover:bg-warm-300"
+                : "bg-olive text-canvas hover:bg-olive-hover"
+            }`}
           >
-            {showForm ? <X className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
-            {showForm ? "Cancel" : "New Entry"}
+            {showForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+            {showForm ? "Cancel" : "New entry"}
           </button>
         </div>
 
+        {/* Compose form */}
         {showForm && (
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4"
+            className="bg-warm-50 rounded-card border border-warm-200 shadow-card p-6 space-y-6"
           >
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                How are you feeling? <span className="text-red-400">*</span>
+              <label className="block text-[11px] font-medium tracking-widest uppercase text-warm-500 mb-3">
+                How are you feeling?
               </label>
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                rows={5}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
-                placeholder="Write your thoughts here…"
+                rows={6}
+                className="w-full px-4 py-3 bg-canvas border border-warm-300 rounded-card text-sm text-ink font-light leading-7 placeholder:text-warm-300 focus:outline-none focus:border-olive resize-none transition-colors duration-150"
+                placeholder="Write freely. This space is yours."
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Emotions <span className="text-slate-400 text-xs">(select all that apply)</span>
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {emotions.map((em) => (
-                  <button
-                    key={em.id}
-                    type="button"
-                    onClick={() => toggleEmotion(em.id)}
-                    className={`px-3 py-1 text-sm rounded-full border transition ${
-                      selectedIds.includes(em.id)
-                        ? "bg-brand-600 border-brand-600 text-white"
-                        : "bg-white border-slate-300 text-slate-600 hover:border-brand-400"
-                    }`}
-                  >
-                    {em.label}
-                  </button>
-                ))}
+            {/* Emotion tags */}
+            {emotions.length > 0 && (
+              <div>
+                <label className="block text-[11px] font-medium tracking-widest uppercase text-warm-500 mb-3">
+                  Emotions
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {emotions.map((em) => {
+                    const active = selectedIds.includes(em.id);
+                    return (
+                      <button
+                        key={em.id}
+                        type="button"
+                        onClick={() => toggleEmotion(em.id)}
+                        className={`px-4 py-1.5 text-[11px] font-medium tracking-wide rounded-full border transition-all duration-150 ${
+                          active
+                            ? "bg-olive border-olive text-canvas"
+                            : "bg-olive-light border-olive-border text-olive-muted hover:border-olive hover:text-olive"
+                        }`}
+                      >
+                        {em.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+              <p className="text-xs text-warm-700 bg-warm-100 border border-warm-300 rounded-card px-4 py-3">
                 {error}
               </p>
             )}
@@ -161,22 +181,22 @@ export default function PatientPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-2.5 bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white font-semibold rounded-lg transition text-sm"
+              className="w-full py-3 bg-olive hover:bg-olive-hover disabled:opacity-50 text-canvas text-sm font-medium tracking-wide rounded-card transition-colors duration-150"
             >
-              {submitting ? "Saving…" : "Save Entry"}
+              {submitting ? "Saving…" : "Save entry"}
             </button>
           </form>
         )}
 
+        {/* Feed */}
         {posts.length === 0 ? (
-          <div className="text-center py-16 text-slate-400">
-            <ChevronDown className="w-10 h-10 mx-auto mb-3 opacity-30" />
-            <p className="text-lg font-medium">No entries yet</p>
-            <p className="text-sm mt-1">Tap "New Entry" to start journaling.</p>
+          <div className="text-center py-24">
+            <p className="text-sm text-warm-400 font-light">No entries yet.</p>
+            <p className="text-xs text-warm-300 mt-1">Begin when you&apos;re ready.</p>
           </div>
         ) : (
           <div className="space-y-4">
-            {posts.map((p) => (
+            {posts.map((p: Post) => (
               <PostCard key={p.id} post={p} />
             ))}
           </div>

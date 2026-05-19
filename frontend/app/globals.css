@@ -1,9 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  font-family: 'Inter', system-ui, sans-serif;
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #F9F6F0;
+    color: #1A1A1A;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: #C4CFBF;
+    color: #1A1A1A;
+  }
+
+  input, textarea, select {
+    background-color: #F9F6F0;
+  }
 }

@@ -3,8 +3,8 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
-  title: "OnTherapy",
-  description: "Secure therapeutic journaling for patients and therapists",
+  title: "Ancora",
+  description: "Secure therapeutic journaling platform by Ancora",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

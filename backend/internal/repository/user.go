@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ancora/backend/internal/model"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/ontherapy/backend/internal/model"
 )
 
 type UserRepository struct {
@@ -136,7 +136,11 @@ func scanUser(row scanner) (*model.User, error) {
 	return u, nil
 }
 
-func collectUsers(rows interface{ Next() bool; Scan(...any) error; Err() error }) ([]*model.User, error) {
+func collectUsers(rows interface {
+	Next() bool
+	Scan(...any) error
+	Err() error
+}) ([]*model.User, error) {
 	var users []*model.User
 	for rows.Next() {
 		u := &model.User{}

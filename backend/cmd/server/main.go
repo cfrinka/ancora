@@ -10,10 +10,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ancora/backend/internal/config"
+	"github.com/ancora/backend/internal/handler"
+	"github.com/ancora/backend/internal/repository"
 	"github.com/joho/godotenv"
-	"github.com/ontherapy/backend/internal/config"
-	"github.com/ontherapy/backend/internal/handler"
-	"github.com/ontherapy/backend/internal/repository"
 )
 
 func main() {

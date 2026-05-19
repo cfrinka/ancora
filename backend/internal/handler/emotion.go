@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/ontherapy/backend/internal/repository"
+	"github.com/ancora/backend/internal/repository"
 )
 
 type EmotionHandler struct {

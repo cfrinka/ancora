@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	mw "github.com/ontherapy/backend/internal/middleware"
-	"github.com/ontherapy/backend/internal/model"
-	"github.com/ontherapy/backend/internal/repository"
+	mw "github.com/ancora/backend/internal/middleware"
+	"github.com/ancora/backend/internal/model"
+	"github.com/ancora/backend/internal/repository"
 )
 
 type PostHandler struct {
