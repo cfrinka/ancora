@@ -34,6 +34,8 @@ func buildRouter(
 
 	// Public
 	r.Post("/api/auth/login", authH.Login)
+	r.Post("/api/auth/register", authH.Register)
+	r.Get("/api/auth/therapists", authH.ListTherapistsPublic)
 
 	// Authenticated
 	r.Group(func(r chi.Router) {

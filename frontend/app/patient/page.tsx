@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { getPatientFeed, createPost, getActiveEmotions } from "@/lib/api";
 import { Post, Emotion } from "@/types";
 import Navbar from "@/components/Navbar";
+import { useI18n } from "@/lib/i18n/context";
 import { Loader2, Plus, X } from "lucide-react";
 
 function EmotionTag({ label }: { label: string }) {
@@ -46,6 +47,7 @@ function PostCard({ post }: { post: Post }) {
 
 export default function PatientPage() {
   const { user, loading: authLoading } = useAuth();
+  const { t } = useI18n();
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -77,7 +79,7 @@ export default function PatientPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!content.trim()) { setError("Please write something before saving."); return; }
+    if (!content.trim()) { setError(t.patient.emptyError); return; }
     setError("");
     setSubmitting(true);
     try {
@@ -87,7 +89,7 @@ export default function PatientPage() {
       setSelectedIds([]);
       setShowForm(false);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to save entry");
+      setError(err instanceof Error ? err.message : t.patient.saveError);
     } finally {
       setSubmitting(false);
     }
@@ -109,8 +111,8 @@ export default function PatientPage() {
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-medium text-ink tracking-tight">Journal</h1>
-            <p className="text-sm text-warm-400 font-light mt-0.5">Your private entries</p>
+            <h1 className="text-lg font-medium text-ink tracking-tight">{t.patient.title}</h1>
+            <p className="text-sm text-warm-400 font-light mt-0.5">{t.patient.subtitle}</p>
           </div>
           <button
             onClick={() => setShowForm((v: boolean) => !v)}
@@ -121,7 +123,7 @@ export default function PatientPage() {
             }`}
           >
             {showForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-            {showForm ? "Cancel" : "New entry"}
+            {showForm ? t.common.cancel : t.patient.newEntry}
           </button>
         </div>
 
@@ -133,14 +135,14 @@ export default function PatientPage() {
           >
             <div>
               <label className="block text-[11px] font-medium tracking-widest uppercase text-warm-500 mb-3">
-                How are you feeling?
+                {t.patient.howAreYouFeeling}
               </label>
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={6}
                 className="w-full px-4 py-3 bg-canvas border border-warm-300 rounded-card text-sm text-ink font-light leading-7 placeholder:text-warm-300 focus:outline-none focus:border-olive resize-none transition-colors duration-150"
-                placeholder="Write freely. This space is yours."
+                placeholder={t.patient.textareaPlaceholder}
               />
             </div>
 
@@ -148,7 +150,7 @@ export default function PatientPage() {
             {emotions.length > 0 && (
               <div>
                 <label className="block text-[11px] font-medium tracking-widest uppercase text-warm-500 mb-3">
-                  Emotions
+                  {t.patient.emotionsLabel}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {emotions.map((em) => {
@@ -183,7 +185,7 @@ export default function PatientPage() {
               disabled={submitting}
               className="w-full py-3 bg-olive hover:bg-olive-hover disabled:opacity-50 text-canvas text-sm font-medium tracking-wide rounded-card transition-colors duration-150"
             >
-              {submitting ? "Saving…" : "Save entry"}
+              {submitting ? t.common.saving : t.common.save}
             </button>
           </form>
         )}
@@ -191,8 +193,8 @@ export default function PatientPage() {
         {/* Feed */}
         {posts.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-sm text-warm-400 font-light">No entries yet.</p>
-            <p className="text-xs text-warm-300 mt-1">Begin when you&apos;re ready.</p>
+            <p className="text-sm text-warm-400 font-light">{t.patient.noEntries}</p>
+            <p className="text-xs text-warm-300 mt-1">{t.patient.noEntriesHint}</p>
           </div>
         ) : (
           <div className="space-y-4">

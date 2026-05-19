@@ -52,6 +52,44 @@ func (r *UserRepository) CreateTherapist(ctx context.Context, email, passwordHas
 	return scanUser(row)
 }
 
+func (r *UserRepository) CreatePatient(ctx context.Context, email, passwordHash, fullName string, therapistID *string) (*model.User, error) {
+	const q = `
+		INSERT INTO users (email, password_hash, full_name, role_id, therapist_id)
+		VALUES ($1, $2, $3, (SELECT id FROM roles WHERE name = 'patient'),
+		        CASE WHEN $4::text IS NULL THEN NULL ELSE $4::uuid END)
+		RETURNING id, email, password_hash, full_name, role_id, 'patient' AS role_name,
+		          therapist_id, is_active, created_at, updated_at`
+
+	var tid interface{}
+	if therapistID != nil && *therapistID != "" {
+		tid = *therapistID
+	}
+	row := r.db.QueryRow(ctx, q, email, passwordHash, fullName, tid)
+	return scanUser(row)
+}
+
+func (r *UserRepository) ListTherapistsPublic(ctx context.Context) ([]model.PublicTherapist, error) {
+	const q = `
+		SELECT id::text, full_name FROM users
+		WHERE role_id = (SELECT id FROM roles WHERE name = 'therapist') AND is_active = TRUE
+		ORDER BY full_name`
+
+	rows, err := r.db.Query(ctx, q)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var list []model.PublicTherapist
+	for rows.Next() {
+		var t model.PublicTherapist
+		if err := rows.Scan(&t.ID, &t.FullName); err != nil {
+			return nil, err
+		}
+		list = append(list, t)
+	}
+	return list, rows.Err()
+}
+
 func (r *UserRepository) AssignPatientToTherapist(ctx context.Context, patientID, therapistID uuid.UUID) error {
 	const q = `UPDATE users SET therapist_id = $1 WHERE id = $2 AND role_id = (SELECT id FROM roles WHERE name = 'patient')`
 	tag, err := r.db.Exec(ctx, q, therapistID, patientID)

@@ -64,6 +64,19 @@ type CreatePostRequest struct {
 	EmotionIDs []int  `json:"emotion_ids"`
 }
 
+type RegisterRequest struct {
+	Email       string  `json:"email"`
+	FullName    string  `json:"full_name"`
+	Password    string  `json:"password"`
+	Role        string  `json:"role"`         // "therapist" or "patient"
+	TherapistID *string `json:"therapist_id"` // optional, for patients
+}
+
+type PublicTherapist struct {
+	ID       string `json:"id"`
+	FullName string `json:"full_name"`
+}
+
 type CreateTherapistRequest struct {
 	Email    string `json:"email"`
 	FullName string `json:"full_name"`

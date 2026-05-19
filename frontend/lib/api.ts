@@ -22,6 +22,20 @@ export const login = (email: string, password: string) =>
 
 export const logout = () => request("/auth/logout", { method: "POST" });
 
+export const register = (
+  email: string,
+  full_name: string,
+  password: string,
+  role: "therapist" | "patient",
+  therapist_id?: string
+) =>
+  request("/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ email, full_name, password, role, therapist_id: therapist_id || null }),
+  });
+
+export const getPublicTherapists = () => request<{ id: string; full_name: string }[]>("/auth/therapists");
+
 export const getMe = () => request("/auth/me");
 
 // Emotions (all authenticated users)

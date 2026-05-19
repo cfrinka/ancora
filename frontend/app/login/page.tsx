@@ -2,7 +2,9 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/lib/i18n/context";
 import { login } from "@/lib/api";
 import { AuthResponse } from "@/types";
 import { Eye, EyeOff } from "lucide-react";
@@ -10,6 +12,7 @@ import { Eye, EyeOff } from "lucide-react";
 export default function LoginPage() {
   const router = useRouter();
   const { refresh } = useAuth();
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -41,17 +44,17 @@ export default function LoginPage() {
         {/* Brand mark */}
         <div className="text-center mb-12">
           <span className="text-[11px] font-semibold tracking-[0.26em] uppercase text-olive">
-            Âncora
+            {t.common.brand}
           </span>
           <p className="text-warm-400 text-sm mt-3 font-light">
-            Sign in to your account
+            {t.login.subtitle}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-[11px] font-medium tracking-widest uppercase text-warm-500 mb-2">
-              Email
+              {t.login.emailLabel}
             </label>
             <input
               type="email"
@@ -59,13 +62,13 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-canvas border border-warm-300 rounded-card text-sm text-ink placeholder:text-warm-400 focus:outline-none focus:border-olive transition-colors duration-150"
-              placeholder="you@example.com"
+              placeholder={t.login.emailPlaceholder}
             />
           </div>
 
           <div>
             <label className="block text-[11px] font-medium tracking-widest uppercase text-warm-500 mb-2">
-              Password
+              {t.login.passwordLabel}
             </label>
             <div className="relative">
               <input
@@ -74,13 +77,13 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 pr-11 bg-canvas border border-warm-300 rounded-card text-sm text-ink placeholder:text-warm-400 focus:outline-none focus:border-olive transition-colors duration-150"
-                placeholder="••••••••"
+                placeholder={t.login.passwordPlaceholder}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-warm-400 hover:text-ink transition-colors duration-150"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? t.login.hidePassword : t.login.showPassword}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -98,9 +101,16 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full py-3 mt-2 bg-olive hover:bg-olive-hover disabled:opacity-50 text-canvas text-sm font-medium tracking-wide rounded-card transition-colors duration-150"
           >
-            {loading ? "Signing in…" : "Sign in"}
+            {loading ? t.common.signingIn : t.common.signIn}
           </button>
         </form>
+
+        <p className="text-center text-xs text-warm-400 mt-8">
+          {t.login.registerLink}{" "}
+          <Link href="/register" className="text-olive hover:underline font-medium">
+            {t.login.registerCta}
+          </Link>
+        </p>
       </div>
     </div>
   );

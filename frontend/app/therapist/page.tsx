@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { getTherapistFeed, getMyPatients } from "@/lib/api";
 import { Post, User } from "@/types";
 import Navbar from "@/components/Navbar";
+import { useI18n } from "@/lib/i18n/context";
 import { Loader2 } from "lucide-react";
 
 function EmotionTag({ label }: { label: string }) {
@@ -18,6 +19,7 @@ function EmotionTag({ label }: { label: string }) {
 
 export default function TherapistPage() {
   const { user, loading: authLoading } = useAuth();
+  const { t } = useI18n();
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -62,9 +64,9 @@ export default function TherapistPage() {
         {/* Header */}
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-lg font-medium text-ink tracking-tight">Patient Feed</h1>
+            <h1 className="text-lg font-medium text-ink tracking-tight">{t.therapist.title}</h1>
             <p className="text-sm text-warm-400 font-light mt-0.5">
-              {patients.length} patient{patients.length !== 1 ? "s" : ""} assigned
+              {patients.length} {patients.length !== 1 ? t.therapist.subtitlePlural : t.therapist.subtitle}
             </p>
           </div>
 
@@ -73,7 +75,7 @@ export default function TherapistPage() {
             onChange={(e) => setFilterPatient(e.target.value)}
             className="px-4 py-2 text-sm bg-canvas border border-warm-300 text-ink rounded-card focus:outline-none focus:border-olive transition-colors duration-150"
           >
-            <option value="all">All patients</option>
+            <option value="all">{t.therapist.allPatients}</option>
             {patients.map((p) => (
               <option key={p.id} value={p.id}>{p.full_name}</option>
             ))}
@@ -83,8 +85,8 @@ export default function TherapistPage() {
         {/* Feed */}
         {filtered.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-sm text-warm-400 font-light">No entries yet.</p>
-            <p className="text-xs text-warm-300 mt-1">Your patients haven&apos;t written anything.</p>
+            <p className="text-sm text-warm-400 font-light">{t.therapist.noEntries}</p>
+            <p className="text-xs text-warm-300 mt-1">{t.therapist.noEntriesHint}</p>
           </div>
         ) : (
           <div className="space-y-4">
